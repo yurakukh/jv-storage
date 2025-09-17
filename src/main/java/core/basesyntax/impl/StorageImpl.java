@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class StorageImpl<K, V> implements Storage<K, V> {
     private static final int MAX_CAPACITY = 10;
-    private int size = 0;
+    private int size;
     private final Entry<K, V>[] entries;
 
     private static class Entry<K, V> {
@@ -36,16 +36,15 @@ public class StorageImpl<K, V> implements Storage<K, V> {
 
     @SuppressWarnings("unchecked")
     public StorageImpl() {
-        entries = (Entry<K, V>[]) new Entry[MAX_CAPACITY];
+        this.entries = (Entry<K, V>[]) new Entry[MAX_CAPACITY];
+        this.size = 0;
     }
 
     @Override
     public void put(K key, V value) {
-        for (int i = 0; i < size; i++) {
-            if (Objects.equals(entries[i].getKey(), key)) {
-                entries[i].setValue(value);
-                return;
-            }
+        int keyIndex = getKeyIndex(key);
+        if (getKeyIndex != -1) {
+            entries[keyIndex].setValue(value);
         }
         if (size < MAX_CAPACITY) {
             entries[size++] = new Entry(key, value);
@@ -56,12 +55,19 @@ public class StorageImpl<K, V> implements Storage<K, V> {
 
     @Override
     public V get(K key) {
+        if (getKeyIndex(key) == -1) {
+            return null;        
+        }
+        return entries[i].getValue();
+    }
+
+    private int getKeyIndex(K key) {
         for (int i = 0; i < size; i++) {
             if (Objects.equals(entries[i].getKey(), key)) {
-                return entries[i].getValue();
+                return i;
             }
         }
-        return null;
+        return -1;
     }
 
     @Override
