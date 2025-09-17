@@ -49,9 +49,7 @@ public class StorageImpl<K, V> implements Storage<K, V> {
         }
         if (size < MAX_CAPACITY) {
             entries[size++] = new Entry<>(key, value);
-        } else {
-            System.out.println("The storage is full...");
-        }
+        } 
     }
 
     @Override
