@@ -43,7 +43,7 @@ public class StorageImpl<K, V> implements Storage<K, V> {
     @Override
     public void put(K key, V value) {
         int keyIndex = getKeyIndex(key);
-        if (getKeyIndex != -1) {
+        if (keyIndex != -1) {
             entries[keyIndex].setValue(value);
         }
         if (size < MAX_CAPACITY) {
@@ -55,10 +55,11 @@ public class StorageImpl<K, V> implements Storage<K, V> {
 
     @Override
     public V get(K key) {
-        if (getKeyIndex(key) == -1) {
+        int keyIndex = getKeyIndex(key);
+        if (keyIndex == -1) {
             return null;        
         }
-        return entries[i].getValue();
+        return entries[keyIndex].getValue();
     }
 
     private int getKeyIndex(K key) {
