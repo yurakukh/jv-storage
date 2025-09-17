@@ -1,31 +1,54 @@
 package core.basesyntax.impl;
 
 import core.basesyntax.Storage;
+import java.util.Objects;
 
 public class StorageImpl<K, V> implements Storage<K, V> {
     private static final int MAX_CAPACITY = 10;
-    private final K[] keys;
-    private final V[] values;
-    private int size;
+    private int size = 0;
+    private final Entry<K, V>[] entries;
 
+    private static class Entry<K, V> {
+        private K key;
+        private V value;
+
+        public Entry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        public K getKey() {
+            return key;
+        }
+
+        public void setKey(K key) {
+            this.key = key;
+        }
+
+        public V getValue() {
+            return value;
+        }
+
+        public void setValue(V value) {
+            this.value = value;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     public StorageImpl() {
-        this.keys = (K[]) new Object[MAX_CAPACITY];
-        this.values = (V[]) new Object[MAX_CAPACITY];
-        this.size = 0;
+        entries = (Entry<K, V>[]) new Entry[MAX_CAPACITY];
     }
 
     @Override
     public void put(K key, V value) {
         for (int i = 0; i < size; i++) {
-            if (key == keys[i] || (key != null && key.equals(keys[i]))) {
-                values[i] = value;
+            if (Objects.equals(entries[i].getKey(), key)) {
+                entries[i].setValue(value);
                 return;
             }
         }
         if (size < MAX_CAPACITY) {
-            keys[size] = key;
-            values[size] = value;
-            size++;
+            entries[size++] = new Entry(key, value);
         } else {
             System.out.println("The storage is full...");
         }
@@ -34,8 +57,8 @@ public class StorageImpl<K, V> implements Storage<K, V> {
     @Override
     public V get(K key) {
         for (int i = 0; i < size; i++) {
-            if (key == keys[i] || (key != null && key.equals(keys[i]))) {
-                return values[i];
+            if (Objects.equals(entries[i].getKey(), key)) {
+                return entries[i].getValue();
             }
         }
         return null;
