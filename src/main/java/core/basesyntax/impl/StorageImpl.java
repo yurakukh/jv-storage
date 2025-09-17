@@ -45,9 +45,10 @@ public class StorageImpl<K, V> implements Storage<K, V> {
         int keyIndex = getKeyIndex(key);
         if (keyIndex != -1) {
             entries[keyIndex].setValue(value);
+            return; // Вихід з методу після оновлення значення
         }
         if (size < MAX_CAPACITY) {
-            entries[size++] = new Entry(key, value);
+            entries[size++] = new Entry<>(key, value);
         } else {
             System.out.println("The storage is full...");
         }
