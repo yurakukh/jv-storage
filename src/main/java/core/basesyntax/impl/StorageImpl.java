@@ -1,7 +1,6 @@
 package core.basesyntax.impl;
 
 import core.basesyntax.Storage;
-import java.util.NoSuchElementException;
 
 public class StorageImpl<K, V> implements Storage<K, V> {
     private static final int MAX_CAPACITY = 10;
@@ -17,16 +16,13 @@ public class StorageImpl<K, V> implements Storage<K, V> {
 
     @Override
     public void put(K key, V value) {
-        if (key == null) {
-            throw new IllegalArgumentException("key can't be null");
-        }
         for (int i = 0; i < size; i++) {
-            if (key.equals(keys[i])) {
+            if (key == keys[i] || (key != null && key.equals(keys[i]))) {
                 values[i] = value;
                 return;
             }
         }
-        if (size <= MAX_CAPACITY) {
+        if (size < MAX_CAPACITY) {
             keys[size] = key;
             values[size] = value;
             size++;
@@ -37,15 +33,12 @@ public class StorageImpl<K, V> implements Storage<K, V> {
 
     @Override
     public V get(K key) {
-        if (key == null) {
-            throw new IllegalArgumentException("key can't be null");
-        }
         for (int i = 0; i < size; i++) {
-            if (key.equals(keys[i])) {
+            if (key == keys[i] || (key != null && key.equals(keys[i]))) {
                 return values[i];
             }
         }
-        throw new NoSuchElementException("There is no such element...");
+        return null;
     }
 
     @Override
